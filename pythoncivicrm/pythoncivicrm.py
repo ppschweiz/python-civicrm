@@ -313,6 +313,16 @@ class CiviCRM:
         """
         # TODO OPTIONS?
         return self._get('getsingle', entity, kwargs)
+    
+    def getdata(self, entity, returnfield, **kwargs):
+        kwargs.update({'return': returnfield})
+        payload = self._construct_payload('get', 'getvalue', entity, kwargs)
+        api_call = requests.get(self.url, params=payload, timeout=self.timeout, stream=True)
+        if api_call.status_code != 200:
+		     raise CivicrmError('request to %s failed with status code %s'
+                               % (self.url, api_call.status_code))
+        results = json.loads(api_call.content)
+        return self._check_results(results)
 
     def getvalue(self, entity, returnfield, **kwargs):
         """Simple implementation of getvalue action.
