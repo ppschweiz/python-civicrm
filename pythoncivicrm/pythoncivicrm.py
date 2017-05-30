@@ -155,7 +155,7 @@ class CiviCRM:
         if api_call.status_code != 200:
             raise CivicrmError('request to %s failed with status code %s'
                                % (self.url, api_call.status_code))
-        results = json.loads(api_call.content)
+        results = api_call.json()
         return self._check_results(results)
 
     def _post(self, action, entity, parameters=None):
@@ -170,7 +170,7 @@ class CiviCRM:
         if api_call.status_code != 200:
             raise CivicrmError('request to %s failed with status code %s'
                                % (self.url, api_call.status_code))
-        results = json.loads(api_call.content)
+        results = api_call.json()
         # Some entities return things in the values field
         # that don't conform to the normal use elsewhere
         # Here we check for this and just return straight results
@@ -319,9 +319,9 @@ class CiviCRM:
         payload = self._construct_payload('get', 'getvalue', entity, kwargs)
         api_call = requests.get(self.url, params=payload, timeout=self.timeout, stream=True)
         if api_call.status_code != 200:
-		     raise CivicrmError('request to %s failed with status code %s'
+             raise CivicrmError('request to %s failed with status code %s'
                                % (self.url, api_call.status_code))
-        results = json.loads(api_call.content)
+        results = api_call.json()
         return self._check_results(results)
 
     def getvalue(self, entity, returnfield, **kwargs):
